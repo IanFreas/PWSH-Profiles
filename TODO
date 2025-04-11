@@ -1,1 +1,2 @@
 [] Show git status like OhMyPosh
+[] Fix the weird prompt issue where PS> turns into P>
