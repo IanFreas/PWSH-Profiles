@@ -1,6 +1,13 @@
+new-alias tp test-path
+new-alias sel select-object
+
 function prompt {
         write-host "[$((get-date).ToString('hh:mm'))]" -nonewline -foregroundcolor yellow
-        write-host "($($env:USER))" -foregroundcolor red
+	if ($env:USER -eq 'root') {	
+            write-host "($($env:USER)@$(hostname))" -foregroundcolor red
+	} else {
+            write-host "($($env:USER)@$(hostname))" -foregroundcolor green
+	}
         write-host "$(get-location)" -foregroundcolor blue
         write-host $(if ($nestedpromptlevel -ge 1) {'>>'}) -nonewline
         return 'PS>'
