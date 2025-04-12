@@ -1,5 +1,6 @@
 new-alias tp test-path
 new-alias sel select-object
+new-alias g get-childitem
 
 function prompt {
         write-host "[$((get-date).ToString('hh:mm'))]" -nonewline -foregroundcolor yellow
