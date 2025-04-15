@@ -65,8 +65,8 @@ function Get-Password {
 	$passwordOutput = $csvItemOutput | ConvertFrom-CSV
     } else {
         $passwordItem = op item list --categories Login --vault private --format=json |
-	ConvertFrom-JSON -WarningAction Ignore | Select-Object title,id,created_at,updated_at | Sort-Object Title
-	$passwordOutput = $passwordItem
+	ConvertFrom-JSON -WarningAction Ignore | Select-Object title,id,created_at,updated_at  
+	$passwordOutput = $passwordItem | Sort-Object Title
     }
 
     return $passwordOutput
