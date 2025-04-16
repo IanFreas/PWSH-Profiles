@@ -60,7 +60,8 @@ function Get-Password {
     if ($PSBoundParameters.ContainsKey('PasswordName')){
 	$csvItemOutput = @('Username,Password')
         $listOfItems = op item list --categories Login --vault private --format=json | ConvertFrom-JSON -WarningAction Ignore
-	$filteredItems = $listOfItems | Where-Object {$_.title -like $PasswordName}
+	$filteredItems = $listOfItems | Where-Object {$_.title -like "*$PasswordName*"}
+	if ($filteredItems.count -eq 0) {Write-Error "No matches found for $PasswordName"; continue} 
 	$csvItemOutput += $filteredItems | ConvertTo-JSON | op item get - --fields username,password --reveal 
 	$passwordOutput = $csvItemOutput | ConvertFrom-CSV
     } else {
