@@ -76,3 +76,17 @@ function Get-Password {
 
     return $passwordOutput
 }
+
+#TODO fix this. It can't find xclip
+function clip {
+
+    [cmdletbinding()]
+
+    param(
+        [parameter(position=0,valuefrompipeline)]
+        [string] $ClipInput
+    )
+
+    $ClipInput | xclip -sel clip
+    
+}
