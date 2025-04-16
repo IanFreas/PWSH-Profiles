@@ -2,6 +2,10 @@ new-alias tp test-path
 new-alias sel select-object
 new-alias l get-childitem
 
+#git configs
+#git config --global alias.s "status" 
+#git config --global alias.adog "log --all --decorate --oneline --graph"
+
 Set-PsFzfOption -PSReadlineChordProvider 'Ctrl+t' -PSReadlineChordReverseHistory 'Ctrl+r'
 
 function ll {gci -fo}
