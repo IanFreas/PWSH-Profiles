@@ -2,15 +2,30 @@ new-alias tp test-path
 new-alias sel select-object
 new-alias l get-childitem
 
-#git configs
-#git config --global alias.s "status" 
-#git config --global alias.adog "log --all --decorate --oneline --graph"
+<#
+    git configs
+    git config --global alias.s "status" 
+    git config --global alias.adog "log --all --decorate --oneline --graph"
+#>
+<#
+    NeoVim Configs
+    /home/ian/.config/nvim/init.vim
+    set nu rnu
+    set tabstop=4
+    set shiftwidth=4
+    set expandtab
+    set softtabstop=4
+    set autoindent
+    set smartindent
+#>
 
 Set-PsFzfOption -PSReadlineChordProvider 'Ctrl+t' -PSReadlineChordReverseHistory 'Ctrl+r'
 
 function ll {gci -fo}
 
 function prompt {
+#TODO Fix the first line that comes out of the shell to not be a blank line
+    write-host ''
     write-host "[$((get-date).ToString('hh:mm'))] " -nonewline -foregroundcolor yellow
 
     # Check if you're in a git repo
