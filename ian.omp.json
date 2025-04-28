@@ -15,7 +15,7 @@
             "template": "[{{ .CurrentDate | date .Format }}]",
             "type": "time"
           },
-          // Segment 2: User@Host (Whitespace Fixed)
+          // Segment 2: User@Host
           {
             "type": "session",
             "style": "plain",
@@ -24,10 +24,9 @@
               // If user is root, change foreground to red
               "{{ if .Root }}#E06C75{{ end }}"
             ],
-            // Template: User icon, Username@Hostname (Removed trailing space)
-            "template": " \uf007 {{ .UserName }}@{{ .HostName }}", // <-- Space removed here
+            // Template: User icon, Username@Hostname
+            "template": " \uf007 {{ .UserName }}@{{ .HostName }}",
             "properties": {
-              // Explicitly ensure host is displayed
               "display_host": true
             }
           },
@@ -37,65 +36,61 @@
             "style": "plain",
             "foreground": "#E06C75", // Reddish
             "properties": {
-              "mapped_shell_names": { // Custom names for shells
+              "mapped_shell_names": {
                 "pwsh": "PWSH",
                 "powershell": "Powershell",
                 "cmd": "Cmd",
                 "bash": "Bash"
               }
             },
-            // \ue795 is a PowerShell icon, adjust if needed for other primary shells
             "template": " \ue795 {{ .Name }}"
           },
           // Segment 4: Git Status
           {
             "foreground": "#F3C267", // Default Git color: Gold/Orange
-            "foreground_templates": [ // Conditional coloring for Git status
-              "{{ if or (.Working.Changed) (.Staging.Changed) }}#FF9248{{ end }}", // Orange if changes
-              "{{ if and (gt .Ahead 0) (gt .Behind 0) }}#ff4500{{ end }}", // Red/Orange if diverged
-              "{{ if gt .Ahead 0 }}#B388FF{{ end }}", // Purple if ahead
-              "{{ if gt .Behind 0 }}#B388FF{{ end }}" // Purple if behind
+            "foreground_templates": [
+              "{{ if or (.Working.Changed) (.Staging.Changed) }}#FF9248{{ end }}",
+              "{{ if and (gt .Ahead 0) (gt .Behind 0) }}#ff4500{{ end }}",
+              "{{ if gt .Ahead 0 }}#B388FF{{ end }}",
+              "{{ if gt .Behind 0 }}#B388FF{{ end }}"
             ],
             "properties": {
-              "branch_template": "{{ trunc 25 .Branch }}", // Truncate long branch names
-              "fetch_stash_count": true, // Show stash count
-              "fetch_status": true, // Show upstream/downstream status
-              "fetch_upstream_icon": true // Show icon for upstream status
+              "branch_template": "{{ trunc 25 .Branch }}",
+              "fetch_stash_count": true,
+              "fetch_status": true,
+              "fetch_upstream_icon": true
             },
             "style": "plain",
-            // Template for Git info: Upstream icon, HEAD (branch/commit), status, changes, stash
             "template": " {{ .UpstreamIcon }}{{ .HEAD }}{{if .BranchStatus }} {{ .BranchStatus }}{{ end }}{{ if .Working.Changed }} \uf044 {{ .Working.String }}{{ end }}{{ if and (.Working.Changed) (.Staging.Changed) }} |{{ end }}{{ if .Staging.Changed }} \uf046 {{ .Staging.String }}{{ end }}{{ if gt .StashCount 0 }} \ueb4b {{ .StashCount }}{{ end }} ",
             "type": "git"
           }
         ],
-        "type": "prompt" // Type of block: main prompt line
+        "type": "prompt"
       },
       // Block 2: Right-aligned prompt
       {
         "alignment": "right",
         "segments": [
-          // Segment 1 (Right): Exit Status
           {
             "type": "status",
             "style": "plain",
             "foreground": "#b8ff75", // Light Green
             "foreground_templates": [
-              "{{ if gt .Code 0 }}#E06C75{{ end }}" // Red if error code > 0
+              "{{ if gt .Code 0 }}#E06C75{{ end }}"
             ],
-            "template": " x{{ reason .Code }}" // Display 'x' followed by reason/code
+            "template": " x{{ reason .Code }}"
           },
-          // Segment 2 (Right): Execution Time
           {
             "foreground": "#b8ff75", // Light Green
             "foreground_templates": [
-              "{{ if gt .Code 0 }}#E06C75{{ end }}" // Red if last command had error
+              "{{ if gt .Code 0 }}#E06C75{{ end }}"
             ],
             "properties": {
-              "style": "roundrock", // Specific formatting style for time
-              "always_enabled": true // Always show execution time
+              "style": "roundrock",
+              "always_enabled": true
             },
-            "style": "diamond", // Diamond shape background/separator
-            "template": " {{ .FormattedMs }} ", // Display formatted milliseconds
+            "style": "diamond",
+            "template": " {{ .FormattedMs }} ",
             "type": "executiontime"
           }
         ],
@@ -104,45 +99,49 @@
       // Block 3: Second line, Path
       {
         "alignment": "left",
-        "newline": true, // Starts on a new line
+        "newline": true,
         "segments": [
           {
             "foreground": "#61AFEF", // Blue
             "properties": {
-              "style": "full" // Show the full path
+              "style": "full"
             },
             "style": "plain",
-            // \ue5ff is a folder icon
             "template": "\ue5ff {{ .Path }}",
             "type": "path"
           }
         ],
         "type": "prompt"
       },
-      // Block 4: Third line, Prompt Indicator
+      // Block 4: Third line, Prompt Indicator (COLOR MODIFIED)
       {
         "alignment": "left",
-        "newline": true, // Starts on a new line
+        "newline": true,
         "segments": [
-          // Segment 1 (Line 3): Root indicator (shows '!' if root)
+          // Segment 1 (Line 3): Shell-specific prompt indicator
           {
-            "foreground": "#E06C75", // Red
+            "type": "shell",
             "style": "plain",
-            "template": "\u0021", // Exclamation mark character
-            "type": "root"
-          },
-          // Segment 2 (Line 3): Prompt character
-          {
-            "foreground": "#E06C75", // Red
-            "style": "plain",
-            "template": "\u276f", // Heavy right-pointing angle quotation mark ornament
-            "type": "text" // Simple text segment
+            // Removed static foreground, using templates instead
+            "foreground_templates": [
+                // If shell is pwsh or powershell, set foreground to blue
+                "{{ if or (eq .Name \"pwsh\") (eq .Name \"powershell\") }}#61AFEF{{ end }}",
+                // If shell is bash, set foreground to red
+                "{{ if eq .Name \"bash\" }}#E06C75{{ end }}",
+                 // Default/fallback color (e.g., for cmd or other shells) - keep red
+                "{{ if and (ne .Name \"pwsh\") (ne .Name \"powershell\") (ne .Name \"bash\") }}#E06C75{{ end }}"
+            ],
+            // Template uses Go templating to check shell name (.Name)
+            // It displays "PS> " for PowerShell (pwsh or powershell)
+            // It displays "!> " for Bash
+            // It displays "> " for any other shell as a fallback
+            "template": "{{ if or (eq .Name \"pwsh\") (eq .Name \"powershell\") }}PS> {{ else if eq .Name \"bash\" }}!> {{ else }}> {{ end }}"
           }
         ],
         "type": "prompt"
       }
     ],
-    "final_space": true, // Add a space after the entire prompt
-    "version": 3 // Oh My Posh config version
+    "final_space": true, // Add a space after the entire prompt (after the PS>/!>/> )
+    "version": 3
   }
 
