@@ -1,7 +1,9 @@
+# Common aliases
 new-alias tp test-path
 new-alias sel select-object
 new-alias l get-childitem
 
+# App specific cofigs 
 <#
     git configs
     git config --global alias.s "status" 
@@ -21,52 +23,12 @@ new-alias l get-childitem
 
 Set-PsFzfOption -PSReadlineChordProvider 'Ctrl+t' -PSReadlineChordReverseHistory 'Ctrl+r'
 
+oh-my-posh init pwsh --config 'https://raw.githubusercontent.com/IanFreas/PWSH-Profiles/refs/heads/master/ian.omp.json' | invoke-expression
+
+# Useful functions 
+
 function ll {gci -fo}
-<#
-function prompt {
-#TODO Fix the first line that comes out of the shell to not be a blank line
-    write-host ''
-    write-host "[$((get-date).ToString('hh:mm'))] " -nonewline -foregroundcolor yellow
-
-    # Check if you're in a git repo
-    if (git rev-parse --is-inside-work-tree 2>/dev/null) {
-
-        if ($env:USER -eq 'root') {
-            write-host "($($env:USER)@$(hostname)) " -foregroundcolor darkred -nonewline
-        } else {
-            write-host "($($env:USER)@$(hostname)) " -foregroundcolor green -nonewline
-        }
-	
-	$modifiedColor = 'red'	
-	$modifiedCount = (git status -s | wc -l)
-        $currentBranch = (git branch --show-current)	
-
-
-#TODO ?x for untracked and something for modified and not staged, +1 for added, -1 for removed
-
-	if ($modifiedCount -gt 0) {    
-	    write-host "$currentBranch" -foregroundcolor $modifiedColor -nonewline 
-	    write-host " +$modifiedCount" -foregroundcolor $modifiedColor 
-        } else {
-	    write-host "$currentBranch" -foregroundcolor cyan
-        }
-
-    } else {
-        if ($env:USER -eq 'root') {  
-            write-host "($($env:USER)@$(hostname)) " -foregroundcolor darkred 
-        } else {
-            write-host "($($env:USER)@$(hostname)) " -foregroundcolor green 
-        }
-    }
-    
-    write-host "$(get-location)" -foregroundcolor blue
-#TODO Fix the issue with Debugging and it goes like >>PS>
-    write-host $(if ($nestedpromptlevel -ge 1) { '>>' }) -nonewline
-
-
-    return 'PS>'
-}
-#>
+function s {git status}
 
 function Get-Password {
     
@@ -93,7 +55,6 @@ function Get-Password {
     return $passwordOutput
 }
 
-#TODO fix this. It can't find xclip
 function clip {
 
     [cmdletbinding()]
@@ -104,8 +65,5 @@ function clip {
     )
 
     $ClipInput | xclip -sel clip
-    
 }
-oh-my-posh init pwsh --config 'https://raw.githubusercontent.com/JanDeDobbeleer/oh-my-posh/refs/heads/main/themes/emodipt-extend.omp.json' | invoke-expression
 
-function s {git status}
