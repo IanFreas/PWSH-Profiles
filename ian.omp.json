@@ -19,44 +19,42 @@
           {
             "type": "session",
             "style": "plain",
-            "foreground": "#98C379", // Default color: Green (for non-root)
+            "foreground": "#98C379", // Green (Red for root)
             "foreground_templates": [
-              // If user is root, change foreground to red
               "{{ if .Root }}#E06C75{{ end }}"
             ],
-            // Template: User icon, Username@Hostname
             "template": " \uf007 {{ .UserName }}@{{ .HostName }}",
             "properties": {
               "display_host": true
             }
           },
-          // Segment 3: Shell Type (COLOR MODIFIED HERE)
+          // Segment 3: Shell Type (Shell Name Coloring)
           {
             "type": "shell",
             "style": "plain",
-            // Removed static foreground, using templates instead
+            // Conditional coloring for the shell name itself
             "foreground_templates": [
-                // If shell is pwsh or powershell, set foreground to blue
+                // Blue for PowerShell
                 "{{ if or (eq .Name \"pwsh\") (eq .Name \"powershell\") }}#61AFEF{{ end }}",
-                // If shell is bash, set foreground to red
+                // Red for Bash
                 "{{ if eq .Name \"bash\" }}#E06C75{{ end }}",
-                 // Default/fallback color (e.g., for cmd or other shells) - keep red
+                 // Red for others (fallback)
                 "{{ if and (ne .Name \"pwsh\") (ne .Name \"powershell\") (ne .Name \"bash\") }}#E06C75{{ end }}"
             ],
             "properties": {
-              "mapped_shell_names": { // Keep custom names
+              "mapped_shell_names": {
                 "pwsh": "PWSH",
                 "powershell": "Powershell",
                 "cmd": "Cmd",
                 "bash": "Bash"
               }
             },
-            // Template includes shell icon (\ue795 for PS) and the name
-            "template": " {{ if or (eq .Name \"pwsh\") (eq .Name \"powershell\") }}\ue795{{ else if eq .Name \"bash\" }}\uf120{{ else }}\uf120{{ end }} {{ .Name }}" // Using terminal icon \uf120 for bash/default
+            // Template displays icon and shell name
+            "template": " {{ if or (eq .Name \"pwsh\") (eq .Name \"powershell\") }}\ue795{{ else if eq .Name \"bash\" }}\uf120{{ else }}\uf120{{ end }} {{ .Name }}"
           },
           // Segment 4: Git Status
           {
-            "foreground": "#F3C267", // Default Git color: Gold/Orange
+            "foreground": "#F3C267", // Gold/Orange
             "foreground_templates": [
               "{{ if or (.Working.Changed) (.Staging.Changed) }}#FF9248{{ end }}",
               "{{ if and (gt .Ahead 0) (gt .Behind 0) }}#ff4500{{ end }}",
@@ -83,14 +81,14 @@
           {
             "type": "status",
             "style": "plain",
-            "foreground": "#b8ff75", // Light Green
+            "foreground": "#b8ff75", // Light Green (Red on error)
             "foreground_templates": [
               "{{ if gt .Code 0 }}#E06C75{{ end }}"
             ],
             "template": " x{{ reason .Code }}"
           },
           {
-            "foreground": "#b8ff75", // Light Green
+            "foreground": "#b8ff75", // Light Green (Red on error)
             "foreground_templates": [
               "{{ if gt .Code 0 }}#E06C75{{ end }}"
             ],
@@ -122,27 +120,25 @@
         ],
         "type": "prompt"
       },
-      // Block 4: Third line, Prompt Indicator (REVERTED TO PREVIOUS STATE)
+      // Block 4: Third line, Prompt Indicator (Indicator Coloring)
       {
         "alignment": "left",
         "newline": true,
         "segments": [
-          // Segment 1 (Line 3): Shell-specific prompt indicator (No color change here)
+          // Segment 1 (Line 3): Shell-specific prompt indicator
           {
-            "type": "shell",
+            "type": "shell", // Still uses shell type to get the name for the template logic
             "style": "plain",
-            "foreground": "#E06C75", // Keep the prompt indicator consistently red (or choose another color)
-            // Template uses Go templating to check shell name (.Name)
-            // It displays "PS> " for PowerShell (pwsh or powershell)
-            // It displays "!> " for Bash
-            // It displays "> " for any other shell as a fallback
+            // Static foreground color for the prompt indicator itself
+            "foreground": "#E06C75", // Set the indicator to Red
+            // Template logic determines the text (PS>, !>, >)
             "template": "{{ if or (eq .Name \"pwsh\") (eq .Name \"powershell\") }}PS> {{ else if eq .Name \"bash\" }}!> {{ else }}> {{ end }}"
           }
         ],
         "type": "prompt"
       }
     ],
-    "final_space": true, // Add a space after the entire prompt (after the PS>/!>/> )
+    "final_space": true,
     "version": 3
   }
 
