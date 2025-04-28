@@ -35,7 +35,7 @@
             // Conditional coloring for the shell name itself
             "foreground_templates": [
                 // Blue for PowerShell
-                "{{ if or (eq .Name \"pwsh\") (eq .Name \"powershell\") }}#61AFEF{{ end }}",
+                "{{ if or (eq .Name \"PWSH\") (eq .Name \"powershell\") }}#61AFEF{{ end }}",
                 // Red for Bash
                 "{{ if eq .Name \"bash\" }}#E06C75{{ end }}",
                  // Red for others (fallback)
@@ -50,7 +50,7 @@
               }
             },
             // Template displays icon and shell name
-            "template": " {{ if or (eq .Name \"pwsh\") (eq .Name \"powershell\") }}\ue795{{ else if eq .Name \"bash\" }}\uf120{{ else }}\uf120{{ end }} {{ .Name }}"
+            "template": " {{ if or (eq .Name \"PWSH\") (eq .Name \"powershell\") }}\ue795{{ else if eq .Name \"bash\" }}\uf120{{ else }}\uf120{{ end }} {{ .Name }}"
           },
           // Segment 4: Git Status
           {
@@ -132,7 +132,7 @@
             // Static foreground color for the prompt indicator itself
             "foreground": "#E06C75", // Set the indicator to Red
             // Template logic determines the text (PS>, !>, >)
-            "template": "{{ if or (eq .Name \"pwsh\") (eq .Name \"powershell\") }}PS> {{ else if eq .Name \"bash\" }}!> {{ else }}> {{ end }}"
+            "template": "{{ if or (eq .Name \"PWSH\") (eq .Name \"powershell\") }}PS> { else if eq .Name \"bash\" }}!>{{ else }}>{{ end }}"
           }
         ],
         "type": "prompt"
