@@ -2,12 +2,15 @@
 new-alias tp test-path
 new-alias sel select-object
 new-alias l get-childitem
+new-alias g git
 
 # App specific cofigs 
 <#
     git configs
     git config --global alias.s "status" 
+    git config --global alias.a "add" 
     git config --global alias.adog "log --all --decorate --oneline --graph"
+    git config --global core.editor "nvim"
 #>
 <#
     NeoVim Configs
