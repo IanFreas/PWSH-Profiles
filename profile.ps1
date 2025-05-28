@@ -1,69 +1,60 @@
-oh-my-posh init pwsh --config "https://raw.githubusercontent.com/JanDeDobbeleer/oh-my-posh/main/themes/emodipt-extend.omp.json" | Invoke-Expression 
+# Common aliases
+new-alias tp test-path
+new-alias sel select-object
+new-alias l get-childitem
+new-alias g git
 
-$vimrcPath = 'C:\Program Files\Vim\_vimrc' 
-$gitDir = "C:\Users\Ianfr\OneDrive\Documents\GitHub\"
-$nvimInit = "C:\Users\Ianfr\AppData\Local\nvim\init.vim"
+# App specific cofigs 
+<#
+    git configs
+    git config --global alias.s "status" 
+    git config --global alias.a "add" 
+    git config --global alias.adog "log --all --decorate --oneline --graph"
+    git config --global core.editor "nvim"
+#>
+<#
+    NeoVim Configs
+    /home/ian/.config/nvim/init.vim
+    set nu rnu
+    set tabstop=4
+    set shiftwidth=4
+    set expandtab
+    set softtabstop=4
+    set autoindent
+    set smartindent
+#>
 
-function New-Journal {
-    $JournalDate = get-date -Format "%M-dd-yy"
-    new-item -Path .\$JournalDate -ItemType File
-}
+Set-PsFzfOption -PSReadlineChordProvider 'Ctrl+t' -PSReadlineChordReverseHistory 'Ctrl+r'
 
-$JournalDirectory = 'C:\Users\Ianfr\OneDrive\Documents\Journal'
+oh-my-posh init pwsh --config 'https://raw.githubusercontent.com/IanFreas/PWSH-Profiles/refs/heads/master/ian.omp.json' | invoke-expression
 
+# Useful functions 
 
-function Out-Default
-{
-    [CmdletBinding(ConfirmImpact='Medium')]
-    param
-    (
-    [Parameter(ValueFromPipeline=$true)]
-    [System.Management.Automation.PSObject] $InputObject
+function ll {gci -fo}
+function s {git status}
+
+function Get-Password {
+    
+    [cmdletbinding()]
+    
+    param(
+    	[parameter(position=0,valuefrompipeline)]
+        [string] $PasswordName
     )
-    begin
-    {
-        $wrappedCmdlet = $ExecutionContext.InvokeCommand.GetCmdlet('Out-Default')
-        $sb = { & $wrappedCmdlet @PSBoundParameters }
-        $__sp = $sb.GetSteppablePipeline()
-        $__sp.Begin($pscmdlet)
-    }
-    process
-    {
-        $do_process = $true
-        if ($_ -is [System.Management.Automation.ErrorRecord])
-        {
-            if ($_.Exception -is [System.Management.Automation.CommandNotFoundException])
-            {
-                $__command = $_.Exception.CommandName
-                if (Test-Path -Path $__command -PathType container)
-                {
-                    Set-Location $__command
-                    $do_process = $false
-                }
-                elseif ($__command -match '^http://|\.(com|org|net|edu)$')
-                {
-                    if ($matches[0] -ne 'http://')
-                    {
-                        $__command = 'HTTP://' + $__command
-                    }
-                    [System.Diagnostics.Process]::Start($__command)
-                    $do_process = $false
-                }
-            }
-        }
-        if ($do_process)
-        {
-            $global:LAST = $_;
-            $__sp.Process($_)
-        }
-    }
-    end
-    {
-        $__sp.End()
-    }
-}
 
-#set-PsFzfOption -PSReadlineChordProvider 'Ctrl+f' -PSReadlineChordReverseHistory 'Ctrl+r'
-set-PsFzfOption -PSReadlineChordProvider 'Ctrl+t' -PSReadlineChordReverseHistory 'Ctrl+r'
-Set-Alias -Name 'r' -Value Invoke-FuzzyHistory
-Set-Alias -Name 'f' -Value Invoke-Fzf
+    if ($PSBoundParameters.ContainsKey('PasswordName')){
+	$csvItemOutput = @('Username,Password')
+        $listOfItems = op item list --categories Login --vault private --format=json | ConvertFrom-JSON -WarningAction Ignore
+	$filteredItems = $listOfItems | Where-Object {$_.title -like "*$PasswordName*"}
+	if ($filteredItems.count -eq 0) {Write-Error "No matches found for $PasswordName"; continue} 
+	$csvItemOutput += $filteredItems | ConvertTo-JSON | op item get - --fields username,password --reveal 
+	$passwordOutput = $csvItemOutput | ConvertFrom-CSV
+    } else {
+        $passwordItem = op item list --categories Login --vault private --format=json |
+	ConvertFrom-JSON -WarningAction Ignore | Select-Object title,id,created_at,updated_at  
+	$passwordOutput = $passwordItem | Sort-Object Title
+    }
+
+    return $passwordOutput
+}
+new-psdrive -PSProvider FileSystem -Name git -Root 'f:\git'
