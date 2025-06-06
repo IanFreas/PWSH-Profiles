@@ -117,3 +117,6 @@ if ! shopt -oq posix; then
 fi
 export PATH=$PATH:/home/ian/.local/bin
 eval "$(oh-my-posh init bash --config https://raw.githubusercontent.com/IanFreas/PWSH-Profiles/refs/heads/master/ian.omp.json)"
+. ~/.bash_scripts/z.sh
+# Set up fzf key bindings and fuzzy completion
+eval "$(fzf --bash)"
