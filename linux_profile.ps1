@@ -11,6 +11,7 @@ new-alias g git
     git config --global alias.a "add" 
     git config --global alias.adog "log --all --decorate --oneline --graph"
     git config --global core.editor "nvim"
+    git config --global init.defaultBranch main
 #>
 <#
     NeoVim Configs
