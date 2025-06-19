@@ -1,3 +1,6 @@
+# Symlink creation
+# new-item -ItemType SymbolicLink -Path ./Microsoft.PowerShell_profile.ps1 -Value /home/ian/git/PWSH-Profiles/linux_profile.ps1
+
 # Common aliases
 new-alias tp test-path
 new-alias sel select-object
@@ -39,7 +42,7 @@ function Get-Password {
     [cmdletbinding()]
     
     param(
-    	[parameter(position=0,valuefrompipeline)]
+        [parameter(position = 0, valuefrompipeline)]
         [string] $PasswordName
     )
 
