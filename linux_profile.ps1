@@ -1,5 +1,5 @@
 # Symlink creation
-# new-item -ItemType SymbolicLink -Path ./Microsoft.PowerShell_profile.ps1 -Value /home/ian/git/PWSH-Profiles/linux_profile.ps1
+# new-item -ItemType SymbolicLink -Path $PROFILE -Value /home/ian/git/PWSH-Profiles/linux_profile.ps1 -force
 
 # Common aliases
 new-alias tp test-path
