@@ -2,7 +2,7 @@
 new-alias tp test-path
 new-alias sel select-object
 new-alias l get-childitem
-new-alias g git
+#new-alias g git
 
 # App specific cofigs 
 <#
@@ -27,6 +27,8 @@ new-alias g git
 Set-PsFzfOption -PSReadlineChordProvider 'Ctrl+t' -PSReadlineChordReverseHistory 'Ctrl+r'
 
 oh-my-posh init pwsh --config 'https://raw.githubusercontent.com/IanFreas/PWSH-Profiles/refs/heads/master/ian.omp.json' | invoke-expression
+
+new-psdrive -PSProvider FileSystem -Name git -Root 'f:\git'
 
 # Useful functions 
 
@@ -57,4 +59,42 @@ function Get-Password {
 
     return $passwordOutput
 }
-new-psdrive -PSProvider FileSystem -Name git -Root 'f:\git'
+function g {
+    # .SYNOPSIS
+    # Wrapper for Gemini CLI to allow short alias 'g' and seamless piping.
+    
+    [CmdletBinding()]
+    param(
+        [Parameter(ValueFromPipeline = $true)]
+        [string]$InputObject,
+
+        [Parameter(Position = 0, ValueFromRemainingArguments = $true)]
+        [string[]]$Args
+    )
+
+    begin {
+        # Initialize a list to hold piped input
+        $PipelineData = @()
+    }
+
+    process {
+        # Collect all piped input (if any)
+        if ($null -ne $InputObject) {
+            $PipelineData += $InputObject
+        }
+    }
+
+    end {
+        # If we have piped data, join it and pass to gemini via stdin
+        if ($PipelineData.Count -gt 0) {
+            $InputText = $PipelineData -join "`n"
+            # We explicitly use UTF8 to avoid encoding issues with Node.js
+            $InputText | gemini $Args
+        }
+        else {
+            # No pipe? Just run the command normally
+            gemini $Args
+        }
+    }
+}
+
