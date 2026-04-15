@@ -1,3 +1,2 @@
-3270 nerd font
-
+CaskaydiaMono Nerd Font
 /home/ian/.config/Code/User/keybindings.json
