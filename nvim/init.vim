@@ -58,4 +58,16 @@ vim.lsp.config("powershell_es", {
 
 -- Enable the server (This will now safely trigger the LspAttach event above)
 vim.lsp.enable("powershell_es")
+
+-- ==========================================================
+-- 3. SETUP C/C++ LSP (clangd)
+-- ==========================================================
+local clangd_path = vim.fn.stdpath("data") .. "/clangd/bin/clangd.exe"
+
+vim.lsp.config("clangd", {
+  cmd = { clangd_path },
+  root_dir = vim.fn.getcwd(),
+})
+
+vim.lsp.enable("clangd")
 EOF

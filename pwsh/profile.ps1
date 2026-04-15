@@ -2,6 +2,7 @@
 $env:PATH += ';C:\Users\ifreas\opt\nvim-win64\nvim-win64\bin'
 $env:PATH += ';C:\Users\ifreas\opt\fx'
 $env:PATH += ';C:\Users\ifreas\AppData\Local\Temp\zellij\bootstrap'
+$env:PATH += ";$env:LOCALAPPDATA\Programs\w64devkit\bin"
 
 # Auto-launch Zellij if running in Windows Terminal
 # # Auto-launch Zellij if running in Windows Terminal
