@@ -21,6 +21,7 @@ if ($env:WT_SESSION -and -not $env:ZELLIJ) {
 New-Alias tp test-path
 New-Alias sel select-object
 New-Alias l get-childitem
+New-Alias exp Expand-Archive
 #new-alias g git
 
 # App specific cofigs 
