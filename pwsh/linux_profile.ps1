@@ -28,6 +28,8 @@ new-alias l get-childitem
     set smartindent
 #>
 
+$env:PATH = "$HOME/opt/clion-2026.1.1/bin:$env:PATH"
+
 Set-PsFzfOption -PSReadlineChordProvider 'Ctrl+t' -PSReadlineChordReverseHistory 'Ctrl+r'
 
 oh-my-posh init pwsh --config 'https://raw.githubusercontent.com/IanFreas/PWSH-Profiles/refs/heads/master/ian.omp.json' | invoke-expression
