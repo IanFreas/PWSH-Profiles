@@ -6,7 +6,7 @@ $env:PATH += ";$env:LOCALAPPDATA\Programs\w64devkit\bin"
 
 # Auto-launch Zellij if running in Windows Terminal
 # # Auto-launch Zellij if running in Windows Terminal
-if ($env:WT_SESSION -and -not $env:ZELLIJ) {
+if (($env:WT_SESSION -or $env:IS_ALACRITTY) -and -not $env:ZELLIJ) {
 
     # 1. Add your custom PowerShell folder to the environment PATH
     $env:PATH += ";C:\Users\ifreas\opt\PowerShell-7.5.4-win-x64"
@@ -23,6 +23,10 @@ New-Alias tp test-path
 New-Alias sel select-object
 New-Alias l get-childitem
 New-Alias exp Expand-Archive
+
+New-Alias gag Get-AdGroup
+New-Alias gau Get-AdUser
+New-Alias gac Get-AdComputer
 #new-alias g git
 
 # App specific cofigs 
